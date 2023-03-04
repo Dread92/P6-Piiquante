@@ -7,8 +7,7 @@ const port = 3000
 //database
 const  mongoose = require("mongoose");
 const password= "fLydAbrSLs3LUasw"
-const uri = ` mongodb+srv://guillaumeblanc92:${password}@cluster0.wuy64ly.mongodb.net/myFirstDatabase?retryWrites=true&w=majority` 
-
+const uri = `mongodb+srv://guillaumeblanc92:${password}@cluster0.wuy64ly.mongodb.net/?retryWrites=true&w=majority` 
 mongoose
 .connect(uri)
 .then(()=> console.log("connected to mongoose"))
