@@ -10,7 +10,7 @@ const password= "fLydAbrSLs3LUasw"
 const uri = `mongodb+srv://guillaumeblanc92:${password}@cluster0.wuy64ly.mongodb.net/?retryWrites=true&w=majority` // on connecte notre serv à la database créée sur mongodb
 mongoose
 .connect(uri)
-.then(()=> console.log("connected to mongoose"))
+.then(()=> console.log("connected to Mongoose!"))
 .catch (err => console.error("Error connecting to Mongo:", err))
 
 
@@ -31,7 +31,7 @@ server.use(corsMiddleWare()) // on utilise un .use pour enable cors
 server.use(express.json())
 
 // routes
-
+// quand on reçoit une nouvelle requête signup on fabrique un nouvel utilisateur, on le met en base de donnée 
 server.post ("/api/auth/signup", (req,res)=>{
     console.log("signup request", req.body)
     const email= req.body.email
@@ -41,10 +41,11 @@ server.post ("/api/auth/signup", (req,res)=>{
 
 newUser
 .save() // on sauvegarde notre profil d'utilisateur
-.then(res=> console.log("user registered", res))// si réponse on notifie dans l'enregistrement
-.catch(err => console.log("can't register user, something went wrong",err))// sinon erreur
-
-    res.send({message:" Sucessfully registered!"})
+.then(res=> {
+    res.send({message:" Sucessfully registered!"})// si on a une réponse, on enregistre l'utilisateur
+    return console.log("user registered", res);
+})// si réponse on notifie dans l'enregistrement
+.catch(err => console.log("can't register user, something went wrong",err))// sinon erreur et utilisateur non  enregistré
 } )
 server.get('/', (req,res ) => res.send('hello'))
 server.listen(port, () => console.log("listening on port"+ port)) // notre serveur écoute sur le port 3000
