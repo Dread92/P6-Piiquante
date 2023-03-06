@@ -2,7 +2,7 @@
 const  mongoose = require("mongoose");// on utilise mongoose 
 const password= process.env.DB_PASSWORD // on passe le password présent dans env pour éviter qu'il soit visible
 const username = process.env.DB_USERNAME // on passe également le user name depuis le fichier .env
-const uri = `mongodb+srv://${username}:${password}@cluster0.wuy64ly.mongodb.net/?retryWrites=true&w=majority"`; // on connecte notre serv à la database créée sur mongodb
+const uri = `mongodb+srv://${username}:${password}@cluster0.wuy64ly.mongodb.net/?retryWrites=true&w=majority` // on connecte notre serv à la database créée sur mongodb
 
 
 
