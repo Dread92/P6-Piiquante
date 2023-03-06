@@ -1,4 +1,4 @@
-const {user} = require("./mongoose") // on requiert l'objet user dans le fichier mongoose.js
+const {user} = require("./mongo") // on requiert l'objet user dans le fichier mongoose.js
 
 function createUser(req, res){
     const {email, password} = req.body
