@@ -1,9 +1,12 @@
+require('dotenv').config() // on appelle notre fichier dotenv pour activer les variables d'envrionnement du fichier .env
 const express = require("express")
 const server  = express() // on assigne le server à express
 const corsMiddleWare = require("cors") // on créé la variable pour utiliser cors
 const port = 3000
-require("./mongoose") // on requiert le fichier mongoose.js pour établir le lien entre l'index et mongoose, pour la connexion à la database.
+require("./mongo") // on requiert le fichier mongoose.js pour établir le lien entre l'index et mongoose, pour la connexion à la database.
 const {createUser} = require("./Usermanaging") // on requiert la fonction createUser exportée dans UserManaging.js
+
+
 
 
 
