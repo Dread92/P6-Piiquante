@@ -1,10 +1,11 @@
 //database
 const  mongoose = require("mongoose")// on utilise mongoose    
-const  uniqueValidator = require ("mongoose-unique-validator")// on installe mongoose-unique-validator car la version de base de ne nous permet pas de voir les erreurs de double email
+const  uniqueValidator = require("mongoose-unique-validator")// on installe mongoose-unique-validator car la version de base de ne nous permet pas de voir les erreurs de double email
 const password= process.env.DB_PASSWORD // on passe le password présent dans env pour éviter qu'il soit visible
 const username = process.env.DB_USERNAME // on passe également le user name depuis le fichier .env
+const databasename= process.env.DB_NAME
 // on connecte notre serv à la database créée sur mongodb
-const uri = `mongodb+srv://${username}:${password}@cluster0.wuy64ly.mongodb.net/?retryWrites=true&w=majority` // on met nos deux constantes password & username appelées dans le fichier env pour ne pas rendre visible les identifiants de notre DB
+const uri = `mongodb+srv://${username}:${password}@${databasename}/?retryWrites=true&w=majority` // on met nos deux constantes password & username appelées dans le fichier env pour ne pas rendre visible les identifiants de notre DB
 
 
 
