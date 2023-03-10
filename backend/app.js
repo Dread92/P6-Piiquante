@@ -1,5 +1,6 @@
 const express = require('express'); // on importe la dépendance express
 const mongoose = require('mongoose'); // on importe mongoose
+const Sauces = require('./models/sauces');
 require('dotenv').config() // on appelle notre fichier dotenv pour activer les variables d'envrionnement du fichier .env
 // on appelle la méthode express pour notre application
 const app = express();
@@ -27,36 +28,41 @@ app.use((req, res, next) => {
   });
 
   // on ajoute une méthode post pour envoyer la réponse
-  app.post('/api/stuff', (req, res, next) => {
-    console.log(req.body);
-    res.status(201).json({// 201 = ressource/contenu créé
-      message: 'Objet créé !' // JSON renvoyé = objet créé
-    });
+  app.post('/api/sauce', (req, res, next) => {// les requêtes qui arrive à ce .post ont dans son "body" toutes les informations de la sauce
+    delete req.body._id // on retire le champs ID du corps de la requête avant de copier l'objet
+   const sauce= new Sauces ({ // on créé une nouvelle instance de "sauces"
+    ...req.body // on utilise le spread "..." pour récupérer tous les champs qui sont dans le corps de la requête
+   });
+    sauce.save() // on enregistre l'objet sauce dans la base de données grâce à la méthode save 
+      .then(() => res.status(201).json({ message: 'Sauce enregistrée !'})) // si tout est ok, réponse 201 contenu créé / ressource créée avec code 201
+      .catch(error => res.status(400).json({ error })); // on renvoit dans le catch code 400 erreur
   });
 
 // on utilise la méthode get pour retrieve les requêtes get
 app.get('http://localhost:3000/api/sauces', (req, res, next) => {
-    const sauces = [
-      {
+  Sauces.find() // on utilise la méthode find sans paramètres car on veut la liste complète
+  .then(sauce => res.status(200).json(things)) // on veut toutes les sauces retournées par la DB, code 200 OK si succès
+  .catch(error => res.status(400).json({ error })); // ... sinon 400 erreur
+  });
+
+
+  // on utilise get pour n'avoir que l'ID de l'objet
+  app.get('/api/sauces/:id', (req, res, next) => { // les deux points avant id servent à dire à express que le paramètre est dynamique
+    Sauces.findOne({ _id: req.params.id }) // on utilise findOne pour ne trouve qu'un seul des éléments
+      .then(sauce => res.status(200).json(sauce)) // si trouvé code 200 OK + sauce
+      .catch(error => res.status(404).json({ error }));// si erreur 404 not found
+  });  
+
+
+
+/*  {
         _id: 'oeihfzeoi',
         title: 'Mon premier objet',
         description: 'Les infos de mon premier objet',
         imageUrl: 'https://cdn.pixabay.com/photo/2019/06/11/18/56/camera-4267692_1280.jpg',
         price: 4900,
         userId: 'qsomihvqios',
-      },
-      {
-        _id: 'oeihfzeomoihi',
-        title: 'Mon deuxième objet',
-        description: 'Les infos de mon deuxième objet',
-        imageUrl: 'https://cdn.pixabay.com/photo/2019/06/11/18/56/camera-4267692_1280.jpg',
-        price: 2900,
-        userId: 'qsomihvqios',
-      },
-    ];
-    res.status(200).json(stuff);
-  });
-
+      }*/ 
 
 // on exporte cette const pour qu'elle soit accessible depuis les autres fichiers
 module.exports = app;
