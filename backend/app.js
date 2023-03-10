@@ -4,7 +4,7 @@ const mongoose = require('mongoose'); // on importe mongoose
 const app = express();
 
 // on se connecte à la base de données mongoose grâce à notre URL 
-mongoose.connect('mongodb+srv://guillaumeblanc92:<password>@cluster0.wuy64ly.mongodb.net/?retryWrites=true&w=majority',
+mongoose.connect('mongodb+srv://guillaumeblanc92:lRX99QlOmlfgaeVR@cluster0.wuy64ly.mongodb.net/?retryWrites=true&w=majority',
   { useNewUrlParser: true,
     useUnifiedTopology: true })
   .then(() => console.log('Connexion à MongoDB réussie !'))
