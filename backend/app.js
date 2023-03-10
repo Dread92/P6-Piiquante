@@ -1,12 +1,18 @@
 const express = require('express'); // on importe la dépendance express
 const mongoose = require('mongoose'); // on importe mongoose
+require('dotenv').config() // on appelle notre fichier dotenv pour activer les variables d'envrionnement du fichier .env
 // on appelle la méthode express pour notre application
 const app = express();
 
+
+const password= process.env.DB_PASSWORD // on passe le password présent dans env pour éviter qu'il soit visible
+const username = process.env.DB_USERNAME // on passe également le user name depuis le fichier .env
+const databasename= process.env.DB_DATABASENAME
+
+
+const uri = `mongodb+srv://${username}:${password}@${databasename}/?retryWrites=true&w=majority` // on met nos deux constantes password & username appelées dans le fichier env pour ne pas rendre visible les identifiants de notre DB
 // on se connecte à la base de données mongoose grâce à notre URL 
-mongoose.connect('mongodb+srv://guillaumeblanc92:lRX99QlOmlfgaeVR@cluster0.wuy64ly.mongodb.net/?retryWrites=true&w=majority',
-  { useNewUrlParser: true,
-    useUnifiedTopology: true })
+mongoose.connect(uri)
   .then(() => console.log('Connexion à MongoDB réussie !'))
   .catch(() => console.log('Connexion à MongoDB échouée !'));
 
