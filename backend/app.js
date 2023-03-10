@@ -53,7 +53,19 @@ app.get('http://localhost:3000/api/sauces', (req, res, next) => {
       .catch(error => res.status(404).json({ error }));// si erreur 404 not found
   });  
 
+// on rajoute une route "put" vers api/sauces avec l'id en paramètre.
+  app.put('/api/sauces/:id', (req, res, next) => {
+    Sauces.updateOne({ _id: req.params.id }, { ...req.body, _id: req.params.id }) // on utilise la méthode updateOne pour mettre à jour la base de données. on remplace l'id par la nouvelle sauce par son id. 
+      .then(() => res.status(200).json({ message: 'Sauce modifiée!'})) // on retourne la promise 200 OK 
+      .catch(error => res.status(400).json({ error }));// on catch avec erreur 400 error
+  });
 
+// on rajoute une route "delete" pour la suppression d'une sauce.. 
+  app.delete('/api/sauces/:id', (req, res, next) => {// encore une fois on passe par l'id.. 
+    Sauces.deleteOne({ _id: req.params.id }) // on utilise delteOne, avec comme argument l'id de la sauce
+      .then(() => res.status(200).json({ message: 'Sauce supprimée !'}))// on retourne la promise 200 OK 
+      .catch(error => res.status(400).json({ error }));// on catch avec erreur 400 error
+  });
 
 /*  {
         _id: 'oeihfzeoi',
