@@ -1,4 +1,5 @@
 const Sauces= require('../models/sauces.js');
+const fs = require('fs'); // on requiert l'importation de file system de node.Il nous donne accès aux fonctions qui nous permettent de modifier le système de fichiers, y compris aux fonctions permettant de supprimer les fichiers.
 
 exports.createSauces= (req, res, next) => {
   const sauceObject = JSON.parse(req.body.thing);// on commense par parser l'objet sauceObject
@@ -37,10 +38,23 @@ exports.createSauces= (req, res, next) => {
       });
   }
 
-  exports.deleteSauce = (req, res, next) => {// encore une fois on passe par l'id.. 
-    Sauces.deleteOne({ _id: req.params.id }) // on utilise delteOne, avec comme argument l'id de la sauce
-      .then(() => res.status(200).json({ message: 'Sauce supprimée !'}))// on retourne la promise 200 OK 
-      .catch(error => res.status(400).json({ error }));// on catch avec erreur 400 error
+  exports.deleteSauce = (req, res, next) => {// on exporte notre fonction pour supprimer des sauces
+    Sauces.findOne({ _id: req.params.id})// on applique le filtre pour trouver par l'id
+       .then(sauce => {
+           if (sauce.userId != req.auth.userId) {// on vérifie si c'est bien le propriétaire qui demande la suppression
+               res.status(401).json({message: 'Not authorized'}); // si ce n'est pas le cas erreur 401 unauthorized
+           } else {
+               const filename = sauce.imageUrl.split('/images/')[1];// si c'est le bon utilisateur, on supprime la sauce de la DB mais également l'image, en récupérant l'url. split nous permet de récupérer le deuxieme élément, soit le nom du fichier.
+               fs.unlink(`images/${filename}`, () => {// on utilise unlink de file system (fs) avec l'url du fichier à supprimer
+                   Sauces.deleteOne({_id: req.params.id}) // puis on créé une méthode qui va être appellée une fois que le fichier est supprimé ( vu que fonction async), en se servant du même filtre que d'habitude - req.params.id.
+                       .then(() => { res.status(200).json({message: 'Objet supprimé !'})})// code 200 ok  si oui
+                       .catch(error => res.status(401).json({ error }));// 401 unauthorized en cas d'erreur.
+               });
+           }
+       })
+       .catch( error => {
+           res.status(500).json({ error });// erreur 500 serveur si le catch est déclenché
+       });
   }
 
   exports.getOneSauce = (req, res, next) => { // les deux points avant id servent à dire à express que le paramètre est dynamique

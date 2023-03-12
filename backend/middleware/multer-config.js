@@ -1,4 +1,4 @@
-const multer = require('multer'); // on importe notre dépendance multer
+const multer = require('multer'); // on importe notre dépendance multer. multer est un package de gestion de fichiers.
 
 const MIME_TYPES = {// on créé un dictionnaire avec les différents types d'images qu'on peut avoir (jpg=jpeg/png)
   'image/jpg': 'jpg',
