@@ -1,5 +1,5 @@
 const mongoose = require('mongoose'); // on importe mongoose pour créer notre schéma
-
+const Sauces = require('../models/sauces');
 // on créé un schéma de données pour les sauces avec ".Schema"
 const saucesSchema = mongoose.Schema({
   title: { type: String, required: true },// en respectant notre const sauce= du fichier app.js, on ajoute les différentes clés requises( format type:string , required true)
