@@ -4,6 +4,7 @@ require('dotenv').config() // on appelle notre fichier dotenv pour activer les v
 // on appelle la méthode express pour notre application
 const app = express();
 const sauceRoutes = require('./routes/sauce.js')
+const userRoutes = require('./routes/user');// on importe user.js depuis le dossier routes
 
 const password= process.env.DB_PASSWORD // on passe le password présent dans env pour éviter qu'il soit visible
 const username = process.env.DB_USERNAME // on passe également le user name depuis le fichier .env
@@ -37,7 +38,7 @@ app.use((req, res, next) => {
       }*/ 
 
 app.use('/api/sauce', sauceRoutes);// on importe toutes nos routes via ce app.use qui vont être demandée via l'url /api/sauce
-
+app.use('/api/auth', userRoutes); // on importe notre userroutes avec l'URL qui sera la racine des routes liées à l'authentification
 
 // on exporte cette const pour qu'elle soit accessible depuis les autres fichiers
 module.exports = app;
