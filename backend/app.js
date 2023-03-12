@@ -59,7 +59,7 @@ app.get('http://localhost:3000/api/sauces', (req, res, next) => {
       .then(() => res.status(200).json({ message: 'Sauce modifiée!'})) // on retourne la promise 200 OK 
       .catch(error => res.status(400).json({ error }));// on catch avec erreur 400 error
   });
-
+ 
 // on rajoute une route "delete" pour la suppression d'une sauce.. 
   app.delete('/api/sauces/:id', (req, res, next) => {// encore une fois on passe par l'id.. 
     Sauces.deleteOne({ _id: req.params.id }) // on utilise delteOne, avec comme argument l'id de la sauce
