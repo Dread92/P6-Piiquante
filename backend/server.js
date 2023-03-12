@@ -1,6 +1,6 @@
 const http = require('http'); // on appelle la commande http qui va nous permettre de recevoir les requêtes HTTP
 const app = require('./app'); // on importe notre const app précédemment exportée dans le fichier app.js
-
+const auth= require('./middleware/auth');
 //la fonction normalize va nous permettre d'avoir un port valide, sous forme de number ou string
 const normalizePort = val => {
     const port = parseInt(val, 10);

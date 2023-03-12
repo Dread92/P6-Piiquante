@@ -6,6 +6,7 @@ const app = express();
 const sauceRoutes = require('./routes/sauce.js')
 const userRoutes = require('./routes/user');// on importe user.js depuis le dossier routes
 const path = require('path');
+const auth= require('./middleware/auth')
 
 const password= process.env.DB_PASSWORD // on passe le password présent dans env pour éviter qu'il soit visible
 const username = process.env.DB_USERNAME // on passe également le user name depuis le fichier .env
