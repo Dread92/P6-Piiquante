@@ -28,7 +28,11 @@ exports.login = (req, res, next) => {// et la fonction login pour la connexion d
                 }
                 res.status(200).json({// si le compare est bon, on retourne un 200 OK
                     userId: user._id,// l'objet contenant le user._id
-                    token: 'TOKEN' // puis un Token d'authentification
+                    token: jwt.sign(// puis un Token d'authentification grâce à la fonction sign de json web token. celà va nous permettre d'encoder le token. Cette méthode va permettre d'encrypter le token dans le playload
+                        { userId: user._id }, // on force le match entre nos deux userid pour être sûr
+                        'RANDOM_TOKEN_SECRET', // clé secrete d'encodage 
+                        { expiresIn: '24h' } // on configure le token pour qu'il expire dans 24h, forçant la ré authentification
+                    ) 
                 });
             })
             .catch(error => res.status(500).json({ error })); // si erreur, code 500 serveur
