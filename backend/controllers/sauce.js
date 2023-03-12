@@ -1,19 +1,40 @@
 const Sauces= require('../models/sauces.js');
 
-exports.createSauces= (req, res, next) => {// les requêtes qui arrive à ce .post ont dans son "body" toutes les informations de la sauce
-    delete req.body._id // on retire le champs ID du corps de la requête avant de copier l'objet
-   const sauce= new Sauces ({ // on créé une nouvelle instance de "sauces"
-    ...req.body // on utilise le spread "..." pour récupérer tous les champs qui sont dans le corps de la requête
-   });
-    sauce.save() // on enregistre l'objet sauce dans la base de données grâce à la méthode save 
-      .then(() => res.status(201).json({ message: 'Sauce enregistrée !'})) // si tout est ok, réponse 201 contenu créé / ressource créée avec code 201
-      .catch(error => res.status(400).json({ error })); // on renvoit dans le catch code 400 erreur
-  }
+exports.createSauces= (req, res, next) => {
+  const sauceObject = JSON.parse(req.body.thing);// on commense par parser l'objet sauceObject
+  delete sauceObject._id; // on supprime l'id vu qu'il sera généré par notre DB
+  delete sauceObject._userId;// on supprime l'userid pour utiliser celui qui vient du token du client. De cette façon un client ne peut pas se faire passer pour qqn d'autre
+  const sauce = new Sauces({// on créé une nouvelle instance de "sauces"
+      ...sauceObject, // avec ce qui nous a été passé dans sauceObject
+      userId: req.auth.userId, // on extrait le userId grâce à notre middle ware
+      imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`// puis on génère l'url de l'image grâce au "protocol", le nom d'hôte et le nom de fichier unique créé avec multer.
+  });
 
-  exports.modifySauce =  (req, res, next) => {
-    Sauces.updateOne({ _id: req.params.id }, { ...req.body, _id: req.params.id }) // on utilise la méthode updateOne pour mettre à jour la base de données. on remplace l'id par la nouvelle sauce par son id. 
-      .then(() => res.status(200).json({ message: 'Sauce modifiée!'})) // on retourne la promise 200 OK 
-      .catch(error => res.status(400).json({ error }));// on catch avec erreur 400 error
+  sauce.save()// on enregistre l'objet dans la DB 
+  .then(() => { res.status(201).json({message: 'Objet enregistré !'})})// si succès code 201 ressource créée
+  .catch(error => { res.status(400).json( { error })})// sinon erreur 400
+};
+
+  exports.modifySauce =  (req, res, next) => { // on exporte la fonction pour modifier la sauce
+    const sauceObject = req.file ? { // on demande si il y a un champs file
+      ...JSON.parse(req.body.sauce),// si c'est le cas on parse la chaîne de caractère du body de la requête
+      imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`// et on recrée l'url de l'image
+  } : { ...req.body }; // sinon on récupère la sauce directement dans le corps de la requête
+
+  delete sauceObject._userId; // on supprime le userId pour éviter que quelqu'un utilise l'userid
+  Sauces.findOne({_id: req.params.id})// on cherche la sauce dans notre DB pour vérifier si c'est bien l'utilisateur qui cherche à le modifier et pas qqn d'autre..
+      .then((sauce) => { 
+          if (sauce.userId != req.auth.userId) {// en cas de différence entre userId et userid de l'auth, c'est que c'est un utilisateur non authorisé qui essaie de modifier donc..
+              res.status(401).json({ message : 'Not authorized'});// ...on renvoi erreur code 401 unauthorized
+          } else {
+              Sauces.updateOne({ _id: req.params.id}, { ...sauceObject, _id: req.params.id})// sinon, on met à jour notre mise à jour, grâce au filtre "_id: req.params.id", et quelle sauce grâce à ce qu'on récupère dans le sauceObject
+              .then(() => res.status(200).json({message : 'Objet modifié!'}))// en cas de succès code 200 OK 
+              .catch(error => res.status(401).json({ error }));// sinon code 401 unauthorized.
+          }
+      })
+      .catch((error) => {
+          res.status(400).json({ error });
+      });
   }
 
   exports.deleteSauce = (req, res, next) => {// encore une fois on passe par l'id.. 
