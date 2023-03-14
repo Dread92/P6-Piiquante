@@ -2,7 +2,7 @@ const Sauces= require('../models/sauces.js');
 const fs = require('fs'); // on requiert l'importation de file system de node.Il nous donne accès aux fonctions qui nous permettent de modifier le système de fichiers, y compris aux fonctions permettant de supprimer les fichiers.
 
 exports.createSauces= (req, res, next) => {
-  const sauceObject = JSON.parse(req.body.thing);// on commense par parser l'objet sauceObject
+  const sauceObject = JSON.parse(req.body.sauce);// on commense par parser l'objet sauceObject
   delete sauceObject._id; // on supprime l'id vu qu'il sera généré par notre DB
   delete sauceObject._userId;// on supprime l'userid pour utiliser celui qui vient du token du client. De cette façon un client ne peut pas se faire passer pour qqn d'autre
   const sauce = new Sauces({// on créé une nouvelle instance de "sauces"
@@ -65,6 +65,6 @@ exports.createSauces= (req, res, next) => {
 
   exports.getAllSauce = (req, res, next) => {
     Sauces.find() // on utilise la méthode find sans paramètres car on veut la liste complète
-    .then(sauce => res.status(200).json(things)) // on veut toutes les sauces retournées par la DB, code 200 OK si succès
+    .then(sauce => res.status(200).json(sauce)) // on veut toutes les sauces retournées par la DB, code 200 OK si succès
     .catch(error => res.status(400).json({ error })); // ... sinon 400 erreur
     }
