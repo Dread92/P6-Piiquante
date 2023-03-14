@@ -8,4 +8,4 @@ const userSchema = mongoose.Schema({// on créé un schéma pour nos utilisateur
 
 userSchema.plugin(uniqueValidator);// on appelle mongoose-unique-validator dans notre schéma pour vérifier le unique:true de notre email. sans ça, aucune erreur n'est renvoyée en cas de saisie d'email non unique. l'erreur sera renvoyée dans la console.
 
-module.exports = mongoose.model('user', userSchema);
+module.exports = mongoose.model('User', userSchema);

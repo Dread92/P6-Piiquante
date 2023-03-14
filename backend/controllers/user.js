@@ -1,6 +1,6 @@
-const user= require('../models/user.js') // on importe notre modèle user
+const user= require('../models/User.js') // on importe notre modèle user
 const bcrypt = require ('bcrypt');// on requiert l'extension bcrypt qui va servir à hasher les mots de passe
-
+const jwt = require('jsonwebtoken');
 exports.signup = (req, res, next) => { // on créé une fonction signup pour l'enregistrement de nouveaux utilisateurs
     bcrypt.hash(req.body.password, 10) // on appelle .hash pour crypter le mdp, on lui passe le mdp du corps de la requête, on salt 10 fois(cryptagex10) du mdp
     .then(hash => {// vu que méthode async - qui peu prendre du temps - on a un .then et un .catch
